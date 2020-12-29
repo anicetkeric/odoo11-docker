@@ -10,6 +10,9 @@ services:
       - odoo-web-data:/var/lib/odoo
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
+    networks:
+      - odoo-stack
+    restart: unless-stopped      
   db:
     image: postgres:10
     environment:
@@ -18,7 +21,28 @@ services:
       - POSTGRES_USER=odoo
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - odoo-db-data:/var/lib/postgresql/data/pgdata
+      - odoo-db-data:/var/lib/postgresql/data/pgdata  
+    networks:
+      - odoo-stack
+    restart: unless-stopped       
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+       - pgadmin:/root/.pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - odoo-stack
+    restart: unless-stopped 
+
+networks:
+  odoo-stack:
+    driver: bridge
+    
 volumes:
   odoo-web-data:
   odoo-db-data:
