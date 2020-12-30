@@ -46,3 +46,4 @@ networks:
 volumes:
   odoo-web-data:
   odoo-db-data:
+  pgadmin:
